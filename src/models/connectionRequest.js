@@ -4,10 +4,12 @@ const requestSchema = mongoose.Schema(
   {
     fromUserId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "User", //refrence to user colection
       required: true,
     },
     toUserId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     status: {
@@ -31,10 +33,10 @@ requestSchema.pre('save', function(next){
       message: 'Cannot send connection request to ypuself'
     })
   }
-  next(y)
+  next()
 })
 
 
-const connectionRequestModel = new mongoose.model('ConnectionRequest', requestSchema)
+const ConnectionRequest = new mongoose.model('ConnectionRequest', requestSchema)
 
-module.exports = connectionRequestModel
+module.exports = ConnectionRequest

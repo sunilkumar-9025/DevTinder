@@ -1,8 +1,7 @@
 const express = require("express");
 const connectionRequest = require("../models/connectionRequest");
-const user = require("../models/user");
+const User = require("../models/user");
 const requestRouter = express.Router();
-
 
 requestRouter.post("/send/:status/:toUserId", async (req, res) => {
   try {
@@ -16,7 +15,7 @@ requestRouter.post("/send/:status/:toUserId", async (req, res) => {
       throw new Error({ message: "Invalid status type" });
     }
 
-    const toUser = await user.findById(toUserId);
+    const toUser = await User.findById(toUserId);
     if (!toUser) {
       throw new Error({
         message: "User doesnot exist",
@@ -45,6 +44,40 @@ requestRouter.post("/send/:status/:toUserId", async (req, res) => {
     const data = await newConnectionRequest.save();
 
     res.json({ message: "Connection request sent/ignore successfully", data });
+  } catch (error) {
+    res.send("Error : " + error.message);
+  }
+});
+
+requestRouter.post("/send/:status/:requestId", async (req, res) => {
+  try {
+    const { status, requestId } = req.params;
+
+    const allowedStatus = ["accepted", "rejected"];
+
+    if (!allowedStatus.includes(status)) {
+      throw new Error({ message: "invalid status type" });
+    }
+
+    const connection = await connectionRequest
+      .findOne({
+        _id: requestId,
+        toUserId: req.user._id,
+        status: "intrested",
+      })
+
+    if (!connection) {
+      throw new Error({
+        message: "Connection now found",
+      });
+    }
+
+    connection.status = status;
+    const data = await connection.save();
+    res.json({
+      message: "Connection status accepted/rejected successfully",
+      data,
+    });
   } catch (error) {
     res.send("Error : " + error.message);
   }

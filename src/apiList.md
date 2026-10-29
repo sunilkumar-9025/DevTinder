@@ -6,12 +6,12 @@
 - PATCH /profile/edit
 - PATCH /profile/password
 
-- ignored, intrested
-- POST request/send/:status/:userId
+- status: ignored, intrested
+- POST /request/send/:status/:userId
+- status : accepted, rejected
+- POST /request/review/:status/:requestId
 
-- POST /request/review/:accepted/:requestId
-- POST /request/review/:rejected/:requestId
-
-- GET /connections
+- GET /user/received/request
+- GET /user/connections
 - GET /requests/recived
 - GET /feed
